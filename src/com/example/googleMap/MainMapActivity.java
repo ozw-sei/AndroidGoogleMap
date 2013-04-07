@@ -45,6 +45,7 @@ public class MainMapActivity extends MapActivity
 
     //現在地
     public void onClickCurrent( View v ) {
+
     }
 
 
@@ -67,7 +68,19 @@ public class MainMapActivity extends MapActivity
         return targetList;
     }
 
-    //位置と緯度経度・タイトルを初期化
+    /**
+     * 位置情報の設定
+     *
+     * @param current
+     *         　Locationインスタンス
+     * @param lat
+     *         　緯度
+     * @param lon
+     *         　経度
+     * @param name
+     *         　名称
+     * @return　Point情報
+     */
     private PointInfo createPointInfo( Location current, double lat, double lon, String name ) {
         Location loc = new Location( "tmp" );
         loc.setLatitude( lat );
