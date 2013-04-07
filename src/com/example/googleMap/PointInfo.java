@@ -14,6 +14,11 @@ public class PointInfo
     private double mDistance;
 
     //コンストラクタ
+
+    /**
+     * @param loc　位置情報
+     * @param name　名称情報
+     */
     public PointInfo( Location loc, String name ) {
         mLocation = loc;
         mName = name;
@@ -27,6 +32,10 @@ public class PointInfo
         return mName;
     }
 
+    /**
+     * 距離の登録
+     * @param dist
+     */
     public void setDistance( double dist ) {
         mDistance = dist;
     }
