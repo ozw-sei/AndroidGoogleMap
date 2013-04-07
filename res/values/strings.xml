@@ -2,4 +2,7 @@
 <resources>
     <string name="app_name">googleMap</string>
     <string name="google_map_api_key">AIzaSyBCmJCM4z63n237vqOdgz3S3YCpQE5OrCs</string>
+    <string name="string_current">現在地</string>
+    <string name="string_info">周辺情報</string>
+    <string name="string_satellite">衛星写真</string>
 </resources>
