@@ -2,7 +2,10 @@ package com.example.googleMap;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -19,10 +22,18 @@ public class MainMapActivity extends MapActivity
 
     private MapController mMapController;
 
+    private CustomLocationManager mCustomLocationManager;
+
+    private GeoPoint mCurrentPoint;
+
+    private static final int LOCATION_TIME_OUT = 10000;
+
     @Override
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.main );
+
+        mCustomLocationManager = new CustomLocationManager( this );
 
         //initialize MapView
         mMapView = ( MapView ) findViewById( R.id.mapView );
@@ -45,7 +56,25 @@ public class MainMapActivity extends MapActivity
 
     //現在地
     public void onClickCurrent( View v ) {
+        mCustomLocationManager.getNowLocationData( LOCATION_TIME_OUT,
+                new CustomLocationManager.LocationCallback()
+                {
 
+                    @Override
+                    public void onComplete( Location loc ) {
+                        mCurrentPoint = new GeoPoint( ( int ) ( loc.getLatitude() * 1e6 ),
+                                ( int ) ( loc.getLongitude() * 1e6 ) );
+                        if ( mCurrentPoint != null ) {
+                            Log.d( "onClickCurrent", "mCurrentPoint != null" );
+                            mMapController.animateTo( mCurrentPoint );
+                        }
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        Toast.makeText( getApplicationContext(), R.string.toast_time_out, Toast.LENGTH_SHORT ).show();
+                    }
+                } );
     }
 
 

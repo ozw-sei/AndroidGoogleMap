@@ -6,6 +6,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+
 
 public class CustomLocationManager implements LocationListener
 {
@@ -34,6 +36,22 @@ public class CustomLocationManager implements LocationListener
     @Override
     public void onLocationChanged( Location location ) {
         //位置情報を取得した際に呼ばれる
+
+        //位置情報取得終了したので、CallBackを削除
+        mHandler.removeCallbacks( gpsTimeOutRun );
+        mHandler.removeCallbacks( networktimeOutRun );
+
+        if ( mLocationCallback != null ) {
+            mLocationCallback.onComplete( location );
+        }
+
+        removeUpdate();
+    }
+
+    public void getNowLocationData( int delayMill, LocationCallback lc ) {
+        mLocationCallback = lc;
+        mHandler.postDelayed( gpsTimeOutRun, delayMill );
+        startLocation( LocationManager.GPS_PROVIDER );
     }
 
     @Override
@@ -57,4 +75,31 @@ public class CustomLocationManager implements LocationListener
 
         public void onTimeout();
     }
+
+    private LocationCallback mLocationCallback;
+    private Handler mHandler = new Handler();
+    private static final int NETWORK_TIMEOUT = 5000;
+
+    private Runnable gpsTimeOutRun = new Runnable()
+    {
+
+        @Override
+        public void run() {
+            removeUpdate();
+            mHandler.postDelayed( networktimeOutRun, NETWORK_TIMEOUT );
+            startLocation( LocationManager.NETWORK_PROVIDER );
+        }
+    };
+
+
+    private Runnable networktimeOutRun = new Runnable()
+    {
+        @Override
+        public void run() {
+            removeUpdate();
+            if ( mLocationCallback != null ) {
+                mLocationCallback.onTimeout();
+            }
+        }
+    };
 }
